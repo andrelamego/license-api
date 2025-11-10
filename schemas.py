@@ -22,7 +22,7 @@ class LicenseResponse(BaseModel):
     expires_at: datetime
     is_active: bool
     created_at: datetime
-    consumed_at: Optional[datetime] = None  # 👈 exposto na API
+    consumed_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
