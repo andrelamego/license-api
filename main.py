@@ -49,15 +49,13 @@ def root():
 
 @app.post("/license/create", response_model=LicenseResponse)
 def create_license(payload: LicenseCreateRequest, db: Session = Depends(get_db)):
-    """Create a new license key."""
     key = generate_license_key()
     expires_at = calculate_expiration(payload.duration_days)
-
     license_obj = License(
         key=key,
         plan=payload.plan,
         expires_at=expires_at,
-        is_active=True,
+        is_active=False,
     )
     db.add(license_obj)
     db.commit()
@@ -73,38 +71,47 @@ from models import License
 from schemas import LicenseVerifyRequest, LicenseVerifyResponse, LicenseResponse
 from database import SessionLocal
 
-# ...
 
+
+# verify & bind endpoint
 @app.post("/license/verify", response_model=LicenseVerifyResponse)
 def verify_license(payload: LicenseVerifyRequest, db: Session = Depends(get_db)):
     """
-    Verify if a license key is valid, expired, or inactive.
-    Now: a successful verification CONSUMES the key (single use).
+    Verifica a key e realiza bind ao client_id no primeiro uso.
+
+    Regras:
+    - not found -> reason "not found"
+    - expired -> reason "expired"
+    - if consumer_id is None -> bind to payload.client_id, set is_active True, set consumed_at
+    - if consumer_id == payload.client_id -> valid True (same owner)
+    - if consumer_id != payload.client_id -> reason "bound_to_another_client"
     """
     license_obj = db.query(License).filter(License.key == payload.key).first()
 
     if not license_obj:
         return LicenseVerifyResponse(valid=False, reason="not found")
 
-    if not license_obj.is_active:
-        return LicenseVerifyResponse(valid=False, reason="inactive")
-
+    # check expiration first
     if license_obj.expires_at < datetime.utcnow():
         return LicenseVerifyResponse(valid=False, reason="expired")
 
-    # Se chegou aqui, a key é válida.
-    license_obj.is_active = False
-    license_obj.consumed_at = datetime.utcnow()
+    # if no consumer bound yet -> bind to this client_id (first use)
+    if license_obj.consumer_id is None:
+        license_obj.consumer_id = payload.client_id
+        license_obj.is_active = True
+        license_obj.consumed_at = datetime.utcnow()
+        db.commit()
+        db.refresh(license_obj)
 
-    db.commit()
-    db.refresh(license_obj)
+        license_data = LicenseResponse.model_validate(license_obj, from_attributes=True)
+        return LicenseVerifyResponse(valid=True, license=license_data)
 
-    # Converte ORM -> Pydantic
-    license_data = LicenseResponse.model_validate(
-        license_obj,
-        from_attributes=True,
-    )
+    # if it is bound to a different client -> reject
+    if license_obj.consumer_id != payload.client_id:
+        return LicenseVerifyResponse(valid=False, reason="bound_to_another_client")
 
+    # same consumer -> ok (still valid if not expired)
+    license_data = LicenseResponse.model_validate(license_obj, from_attributes=True)
     return LicenseVerifyResponse(valid=True, license=license_data)
 
 

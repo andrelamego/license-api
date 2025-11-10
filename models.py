@@ -10,6 +10,7 @@ class License(Base):
     key = Column(String(64), unique=True, index=True, nullable=False)
     plan = Column(String(50), nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=False)  # keys nascem inativas
     created_at = Column(DateTime, default=datetime.utcnow)
-    consumed_at = Column(DateTime, nullable=True)
+    consumer_id = Column(String(128), nullable=True)   # novo: quem consumiu/associou
+    consumed_at = Column(DateTime, nullable=True)      # opcional: quando consumiu (registro)
