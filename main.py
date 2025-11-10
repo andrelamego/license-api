@@ -65,9 +65,22 @@ def create_license(payload: LicenseCreateRequest, db: Session = Depends(get_db))
     return license_obj
 
 
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from datetime import datetime
+
+from models import License
+from schemas import LicenseVerifyRequest, LicenseVerifyResponse, LicenseResponse
+from database import SessionLocal
+
+# ...
+
 @app.post("/license/verify", response_model=LicenseVerifyResponse)
 def verify_license(payload: LicenseVerifyRequest, db: Session = Depends(get_db)):
-    """Verify if a license key is valid, expired, or inactive."""
+    """
+    Verify if a license key is valid, expired, or inactive.
+    Now: a successful verification CONSUMES the key (single use).
+    """
     license_obj = db.query(License).filter(License.key == payload.key).first()
 
     if not license_obj:
@@ -79,12 +92,21 @@ def verify_license(payload: LicenseVerifyRequest, db: Session = Depends(get_db))
     if license_obj.expires_at < datetime.utcnow():
         return LicenseVerifyResponse(valid=False, reason="expired")
 
+    # Se chegou aqui, a key é válida.
+    license_obj.is_active = False
+    license_obj.consumed_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(license_obj)
+
+    # Converte ORM -> Pydantic
     license_data = LicenseResponse.model_validate(
         license_obj,
         from_attributes=True,
     )
 
     return LicenseVerifyResponse(valid=True, license=license_data)
+
 
 
 @app.get("/licenses", response_model=list[LicenseResponse])

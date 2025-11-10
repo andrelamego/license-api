@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from datetime import datetime
 from database import Base
 
-
 class License(Base):
     __tablename__ = "licenses"
 
@@ -13,3 +12,4 @@ class License(Base):
     expires_at = Column(DateTime, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    consumed_at = Column(DateTime, nullable=True)

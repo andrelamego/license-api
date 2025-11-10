@@ -1,5 +1,5 @@
 # schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
 
@@ -22,9 +22,9 @@ class LicenseResponse(BaseModel):
     expires_at: datetime
     is_active: bool
     created_at: datetime
+    consumed_at: Optional[datetime] = None  # 👈 exposto na API
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class LicenseVerifyRequest(BaseModel):
