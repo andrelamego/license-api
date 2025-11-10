@@ -14,7 +14,7 @@ from schemas import (
 )
 from utils import generate_license_key, calculate_expiration
 
-app = FastAPI(title="License Key API", version="2.0")
+app = FastAPI(title="License Key API", version="3.0")
 
 app.add_middleware(
     CORSMiddleware,
