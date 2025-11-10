@@ -18,16 +18,15 @@ A clean and modern REST API built with **FastAPI + SQLAlchemy**, designed to man
 
 ## Project Structure
 
-license_api/
-│
-├── main.py # FastAPI entry point  
-├── models.py # SQLAlchemy ORM models  
-├── schemas.py # Pydantic schemas for request/response  
-├── database.py # Database connection (SQLite/PostgreSQL)  
-├── utils.py # Helper functions (key generator, expiration)  
-├── requirements.txt # Project dependencies  
-├── README.md # Documentation  
-└── LICENSE # License file  
+license_api/  
+│  
+├── **main.py** # FastAPI entry point  
+├── **models.py** # SQLAlchemy ORM models  
+├── **schemas.py** # Pydantic schemas for request/response  
+├── **database.py** # Database connection (SQLite/PostgreSQL)  
+├── **utils.py** # Helper functions (key generator, expiration)  
+├── **requirements.txt** # Project dependencies  
+└── **README.md** # Documentation  
 
 ---
 
@@ -164,8 +163,7 @@ PUT /license/deactivate/1
 
 ## 👨‍💻 Author
 
-André Lamego
-💼 Fullstack Developer
-📧 Contact: andreolamego@gmail.com
-
-🌐 GitHub: @andrelamego
+André Lamego  
+💼 Fullstack Developer  
+📧 Contact: andreolamego@gmail.com  
+🌐 GitHub: @andrelamego  
