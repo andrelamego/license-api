@@ -4,15 +4,15 @@ A clean and modern REST API built with **FastAPI + SQLAlchemy**, designed to man
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🧱 **Single-table design** – just licenses, no user management
-- 🕒 **Automatic expiration** – each license expires after a given number of days
-- 🔐 **Unique license keys** – generated using `UUID4`
-- ✅ **Status system** – `active`, `inactive`, or `expired`
-- 🔄 **Renewal endpoint** – easily extend license duration
-- 💾 **SQLite by default**, easily switchable to PostgreSQL
-- 🧠 **Clean structure**, ready for Docker, Render, Railway, etc.
+- **Single-table design** – just licenses, no user management
+- **Automatic expiration** – each license expires after a given number of days
+- **Unique license keys** – generated using `UUID4`
+- **Status system** – `active`, `inactive`, or `expired`
+- **Renewal endpoint** – easily extend license duration
+- **SQLite by default**, easily switchable to PostgreSQL
+- **Clean structure**, ready for Docker, Render, Railway, etc.
 
 ---
 
@@ -31,15 +31,15 @@ license_api/
 
 ---
 
-## ⚙️ Installation
+## Installation
 
-### 🧰 Requirements
+### Requirements
 
 - Python **3.10+**
 - pip
 - (optional) PostgreSQL or any SQL-compatible database
 
-### 🪄 Setup
+### Setup
 
 ```bash
 git clone https://github.com/andrelamego/license-api.git
@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 ---
 
-### 🧩 Endpoints Overview
+### Endpoints Overview
 
 | Method   | Endpoint                   | Description                                   |
 | -------- | -------------------------- | --------------------------------------------- |
@@ -62,9 +62,9 @@ pip install -r requirements.txt
 
 ---
 
-### 🧪 Usage Examples
+### Usage Examples
 
-#### ➕ Create License
+#### Create License
 
 POST /license/create
 
@@ -88,7 +88,7 @@ POST /license/create
 }
 ```
 
-#### 🔍 Verify License
+#### Verify License
 
 POST /license/verify
 
@@ -126,7 +126,7 @@ POST /license/verify
 }
 ```
 
-#### 🔄 Renew License
+#### Renew License
 
 PUT /license/renew/1
 
@@ -143,7 +143,7 @@ PUT /license/renew/1
 }
 ```
 
-#### ⛔ Deactivate License
+#### Deactivate License
 
 PUT /license/deactivate/1
 
